@@ -78,7 +78,10 @@ class Executable:
         else:
             soabi = get_config_var("SOABI")
             suffix = ""
-        name_base = f"{name}-{soabi}"
+
+        # TODO multiple platforms
+        name_base = f"lib{name}-{soabi}"
+        suffix = ".so"
         self._base: Path = get_resource_file_path("bases", name_base, suffix)
         if self._base is None:
             raise OptionError(f"no base named {name!r} ({name_base!r})")

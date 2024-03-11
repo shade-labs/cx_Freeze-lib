@@ -123,15 +123,29 @@ class BuildBases(setuptools.command.build_ext.build_ext):
                     extra_args.append("-s")
         for arg in (None, "-fno-lto", "--no-lto"):
             try:
-                self.compiler.link_executable(
+                # self.compiler.link_executable(
+                #     objects,
+                #     fullname,
+                #     libraries=libraries,
+                #     library_dirs=library_dirs,
+                #     runtime_library_dirs=ext.runtime_library_dirs,
+                #     extra_postargs=extra_args + ([arg] if arg else []),
+                #     debug=self.debug,
+                # )
+                self.compiler.link_shared_lib(
                     objects,
                     fullname,
+                    output_dir=None,
                     libraries=libraries,
                     library_dirs=library_dirs,
                     runtime_library_dirs=ext.runtime_library_dirs,
                     extra_postargs=extra_args + ([arg] if arg else []),
+                    export_symbols=self.get_export_symbols(ext),
                     debug=self.debug,
+                    # build_temp=build_temp,
+                    # target_lang=target_lang
                 )
+
             except LinkError:
                 if IS_MINGW or IS_WINDOWS:
                     raise
