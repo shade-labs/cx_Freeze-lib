@@ -218,7 +218,7 @@ class DarwinFile:
 
     @staticmethod
     def isExecutablePath(path: str) -> bool:
-        return path.startswith("@executable_path")
+        return path.startswith("@loader_path")
 
     @staticmethod
     def isLoaderPath(path: str) -> bool:
@@ -246,9 +246,7 @@ class DarwinFile:
         # interpreter? Apparently not a big issue in practice, since the
         # code has been like this forever.
         if self.isExecutablePath(path):
-            return self.path.parent / Path(path).relative_to(
-                "@executable_path/"
-            )
+            return self.path.parent / Path(path).relative_to("@loader_path/")
         raise PlatformError(f"resolveExecutable() called on bad path: {path}")
 
     def resolveRPath(self, path: str) -> Path | None:
@@ -711,7 +709,7 @@ class DarwinFileTracker:
                 # this is where file copied in build dir
                 abs_build_dest = ref_target_file.getBuildPath()
                 rel_build_dest = os.path.relpath(abs_build_dest, build_dir)
-                exe_path = f"@executable_path/{rel_build_dest}"
+                exe_path = f"@loader_path/{rel_build_dest}"
                 change_load_reference(
                     file_path_in_bin_dir, raw_path, exe_path, verbose=False
                 )
